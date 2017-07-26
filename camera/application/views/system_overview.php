@@ -6,7 +6,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
    <meta name="description" content="Bootstrap Admin App + jQuery">
    <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
-   <title><?=$title .'|'.$monitor->Monitor->Name; ?>; ?></title>
+   <title><?=$title; ?></title>
    <!-- =============== VENDOR STYLES ===============-->
    <!-- FONT AWESOME-->
    <link rel="stylesheet" href="<?=base_url('vendor/fontawesome/css/font-awesome.min.css'); ?>">
@@ -19,10 +19,17 @@
    <!-- =============== PAGE VENDOR STYLES ===============-->
    <!-- SWEET ALERT-->
    <link rel="stylesheet" href="<?=base_url('vendor/sweetalert/dist/sweetalert.css'); ?>">
+   <!-- VECTOR MAP-->
+   <link rel="stylesheet" href="<?=base_url('vendor/ika.jvectormap/jquery-jvectormap-1.2.2.css'); ?>">
    <!-- =============== BOOTSTRAP STYLES ===============-->
    <link rel="stylesheet" href="<?=base_url('css/bootstrap.css'); ?>" id="bscss">
    <!-- =============== APP STYLES ===============-->
    <link rel="stylesheet" href="<?=base_url('css/app.css'); ?>" id="maincss">
+   <style type="text/css">
+      .hidden {
+         display: none;
+      }
+   </style>
 </head>
 
 <body>
@@ -87,7 +94,7 @@
             </div>
             <!-- END Nav wrapper-->
             <!-- START Search form-->
-            <form role="search" id="search-event" action="<?=site_url('main/search'); ?>" class="navbar-form">
+            <form role="search" action="<?=site_url('main/search'); ?>" class="navbar-form" id="search-event">
                <div class="form-group has-feedback">
                   <input type="text" placeholder="Type and hit enter ..." class="form-control">
                   <div data-search-dismiss="" class="fa fa-times form-control-feedback"></div>
@@ -109,8 +116,8 @@
                   <li class="has-user-block">
                      <div id="user-block" class="collapse">
                         <div class="item user-block">
-                           <!-- User picture-->
-                           <!-- <div class="user-block-picture">
+                           <!-- User picture--><!-- 
+                           <div class="user-block-picture">
                               <div class="user-block-status">
                                  <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
                                  <div class="circle circle-success circle-lg"></div>
@@ -129,7 +136,7 @@
                   <li class="nav-heading">
                      <span data-localize="sidebar.heading.HEADER">Corporate Access</span>
                   </li>
-                  <li class=" ">
+                  <li class="active">
                      <a href="#dashboard" title="Home" data-toggle="collapse">
                         <em class="icon-speedometer"></em>
                         <span data-localize="sidebar.nav.HOME">Navigation</span>
@@ -141,7 +148,7 @@
                               <span>Corporate Command</span>
                            </a>
                         </li>
-                        <li class=" ">
+                        <li class="active">
                            <a href="<?=site_url('main/#'); ?>" title="Systems Overview">
                               <span>Systems Overview</span>
                            </a>
@@ -153,14 +160,14 @@
                         </li>
                      </ul>
                   </li>
-                  <li class="active">
+                  <li class=" ">
                      <a href="#monitoring" title="Home" data-toggle="collapse">
                         <em class="icon-social-dropbox"></em>
                         <span data-localize="sidebar.nav.HOME">Monitoring</span>
                      </a>
                      <ul id="monitoring" class="nav sidebar-subnav collapse">
                         <li class="sidebar-subnav-header">Monitoring</li>
-                        <li class="active">
+                        <li class=" ">
                            <a href="<?=site_url('main/camera_list'); ?>" title="Live">
                               <span>Live</span>
                            </a>
@@ -236,47 +243,114 @@
       <section>
          <!-- Page content-->
          <div class="content-wrapper">
-            <h3>Dashboard
-               <small><?=$monitor->Monitor->Name; ?></small>
+            <h3>Duck Donuts
+               <small>System Overview</small>
             </h3>
             <div class="row">
-            <div class="panel panel-primary">
-               <div class="panel-heading" style="min-height:55px">
-                  <div class="col-md-9"><h5><?=$monitor->Monitor->Name; ?></h5></div>
-                  <div class="col-md-3"><select class="form-control" id="scale"><option value="400">4x</option>
-      <option value="300">3x</option>
-      <option value="200">2x</option>
-      <option value="150">1.5x</option>
-      <option value="100" selected="selected">Actual</option>
-      <option value="75">3/4x</option>
-      <option value="50">1/2x</option>
-      <option value="33">1/3x</option>
-      <option value="25">1/4x</option>
-      <option value="12.5">1/8x</option></select></div>
-               </div>
-               <div class="panel-body">
-                  <div class="col-md-12">
-                     <div class="vdo" style="width: 100%;width: 100%">
-                     <img src="<?=PATH; ?>/zm/cgi-bin/nph-zms?mode=jpeg&scale=100&maxfps=25&buffer=1000&monitor=<?=$monitor->Monitor->Id; ?>&connkey=<?php $rand=rand(111111,999999); echo $rand; ?>&rand=12545455546546" id="liveVideo">
+               <div class="col-lg-5 col-md-5 col-sm-12" style="display: none;" id="left-row">
+               <!-- video section -->
+                  <div class="panel widget panel-danger">
+                     <div class="panel-heading"><h4>Video Playback</h4></div>
+                     <div class="panel-body" style="min-height: 300px"></div>
+                  </div>
+               <!-- information section -->
+                  <div class="panel widget panel-danger">
+                     <div class="panel-body table-responsive">
+                        <table class="table" width="100%">
+                           <tbody>
+                              <tr>
+                                 <td><strong>Manager Approval</strong></td>
+                                 <td>Bashudev Paudel</td>
+                              </tr>
+                              <tr>
+                                 <td><strong>Register#:</strong></td>
+                                 <td>3</td>
+                              </tr>
+                              <tr>
+                                 <td><strong>Date</strong></td>
+                                 <td><?=Date('h:m:s A'); ?>-12:10:06 PM</td>
+                              </tr>
+                           </tbody>
+                        </table>
                      </div>
                   </div>
-
-                  <div class="col-md-12">
-                     <div class="panel panel-default">
-                        <div class="panel-heading"><?=$location; ?></div>
-                        <div class="panel-body">
-                           <div data-gmap="" data-address="<?=$location; ?>;" data-title="<?=$name; ?>" class="gmap"></div>
+               </div>
+               <div class="col-lg-12 col-md-12 col-sm-12" id="right-row">
+                  <div id="store-list">
+                     <div class="col-md-4">
+                        <button class="btn btn-block btn-lg btn-danger">Store 1</button>
+                     </div>
+                     <div class="col-md-4">
+                        <button class="btn btn-block btn-lg btn-danger">Store 2</button>
+                     </div>
+                     <div class="col-md-4">
+                        <button class="btn btn-block btn-lg btn-danger">Store 3</button>
+                     </div>
+                  <br><br><br>
+                  </div>
+               <div class="col-md-12">
+                  <div class="panel b">
+                     <div class="panel-heading clearpanel" style="display: none;">
+                        <button class="btn btn-danger" id="clearpanel">Clear</button>
+                     </div>
+                     <div class="panel-body">
+                        <div class="table-responsive">
+                           <table class="table table-striped table-hover">
+                              <thead>
+                                 <tr>
+                                    <th>Type</th>
+                                    <th>#ID</th>
+                                    <th>Description</th>
+                                    <th>Location</th>
+                                    <th>Employee</th>
+                                    <th>Discount</th>
+                                    <th>Amount</th>
+                                    <th>Time</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr class="data-row" data-val="20">
+                                    <td>
+                                       <div class="badge bg-gray-lighter">16657</div>
+                                    </td>
+                                    <td>BI:54678</td>
+                                    <td class="text-nowrap">
+                                       <small>Maecenas mollis egestas convallis.</small>
+                                    </td>
+                                    <td>01/01/2016</td>
+                                    <td>
+                                       <div data-toggle="tooltip" data-title="normal" class="circle circle-lg circle-warning"></div>
+                                    </td>
+                                    <td><a href="">Sylvia Daniels</a>
+                                    </td>
+                                    <td>
+                                       <div class="inline wd-xxs label label-success">open</div>
+                                    </td>
+                                    <td>
+                                       10:23 PM
+                                    </td>
+                                 </tr>
+                              </tbody>
+                           </table>
                         </div>
                      </div>
                   </div>
+                  <div class="panel panel-danger" style="display: none;" id="right-row-info">
+                     <div class="panel-heading"><h4>Receipt</h4></div>
+                     <div class="panel-body">
+                        <div class="treeview"></div>
+                     </div>
+                  </div>
                </div>
-            </div>
+               </div>
             </div>
          </div>
       </section>
       <!-- Page footer-->
-      <footer>
-         <span>&copy; <?=Date('Y'); ?> powered by XG for Duck Donuts - All Rights Reserved - Secure Access</span>
+      <footer class="">
+         <div class="container-fluid">
+            <span>&copy; <?=Date('Y'); ?> powered by XG for Duck Donuts - All Rights Reserved - Secure Access</span>
+         </div>
       </footer>
    </div>
    <!-- =============== VENDOR SCRIPTS ===============-->
@@ -304,24 +378,85 @@
    <script src="<?=base_url('js/demo/demo-rtl.js'); ?>"></script>
    <!-- =============== PAGE VENDOR SCRIPTS ===============-->
    <script src="<?=base_url('vendor/sweetalert/dist/sweetalert.min.js'); ?>"></script>
-   <!-- JQUERY UI-->
-   <script src="<?=base_url('vendor/jquery-ui/jquery-ui.js'); ?>"></script>
-   <script src="<?=base_url('vendor/jqueryui-touch-punch/jquery.ui.touch-punch.min.js'); ?>"></script>
-   <!-- GOOGLE MAPS-->
-   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key= AIzaSyCUZfyHvC7jE-yR40zs5w5a04rRJCUdncU"></script>
-   <script src="<?=base_url('vendor/jQuery-gMap/jquery.gmap.min.js'); ?>"></script>
-   <!-- =============== APP SCRIPTS ===============--><!-- =============== APP SCRIPTS ===============-->
+    <!-- FLOT CHART-->
+   <script src="<?=base_url('vendor/Flot/jquery.flot.js'); ?>"></script>
+   <script src="<?=base_url('vendor/flot.tooltip/js/jquery.flot.tooltip.min.js'); ?>"></script>
+   <script src="<?=base_url('vendor/Flot/jquery.flot.resize.js'); ?>"></script>
+   <script src="<?=base_url('vendor/Flot/jquery.flot.pie.js'); ?>"></script>
+   <script src="<?=base_url('vendor/Flot/jquery.flot.time.js'); ?>"></script>
+   <script src="<?=base_url('vendor/Flot/jquery.flot.categories.js'); ?>"></script>
+   <script src="<?=base_url('vendor/flot-spline/js/jquery.flot.spline.min.js'); ?>"></script>
+   <!-- =============== PAGE VENDOR SCRIPTS ===============-->
+   <script src="<?=base_url('js/treeview.js'); ?>"></script>
+   <!-- =============== APP SCRIPTS ===============-->
    <script src="<?=base_url('js/app.js'); ?>"></script>
+
    <script type="text/javascript">
         <?=$this->session->flashdata('message'); ?>
-        $('#scale').change(function() {
-            var sc = $(this).val();
-            var src = $('#liveVideo').attr('src').split('&');
-            src[1] = 'scale='+sc;
-            var src = src.join('&');
-            $('#liveVideo').attr('src', src);
-        });
-   </script>
+
+  $(function(){
+   function panelaction(action) {
+      if(action == 'show') {
+         $('#right-row').removeClass('col-lg-12').removeClass('col-md-12').addClass('col-md-7').addClass('col-lg-7');
+         $('#right-row-info').slideDown();
+         $('#left-row').fadeIn();
+         $('#store-list').slideUp();
+         $('.clearpanel').slideDown();
+      }
+      if(action == 'hide') {
+       $('#right-row').addClass('col-lg-12').addClass('col-md-12').removeClass('col-md-7').removeClass('col-lg-7');
+         $('#left-row').slideUp();  
+         $('#store-list').slideDown();
+         $('#right-row-info').slideUp();
+         $('.clearpanel').hide();
+      }
+   }
+    $(document).on("click",".data-row", function() {
+      var data = $(this).data('val');
+      panelaction('show');
+    });
+    $(document).on("click","#clearpanel", function() {
+      panelaction('hide');
+    });
+    var tree = [
+  {
+    text: "Parent 1",
+    nodes: [
+      {
+         selectable: false,
+        text: "Donutes: <span class='pull-right'>20.20$</span>"
+      }
+    ]
+  },
+  {
+    text: "Parent 2",
+    nodes: [
+      {
+         selectable: false,
+         text: "Child 2"
+      }
+    ]
+  },
+  {
+    text: "Parent 3"
+  },
+  {
+    text: "Parent 4"
+  },
+  {
+    text: "Parent 5"
+  }
+];
+$('.treeview').treeview({data: tree,levels: 1,selectedBackColor: "#FFFFFF", selectedColor: "#000"});
+$(document).on('nodeSelected',".treeview", function(e, node){
+     var NodeID=node.nodeId;
+
+    });
+
+})(window, document, window.jQuery);
+
+
+</script>
 </body>
 
 </html>

@@ -147,6 +147,10 @@ class Main extends CI_Controller {
 		}
 		$this->load->view('camera_list_location',$data);
 	}
+	public function system_overview() {
+		$data['title'] = "System Overview";
+		$this->load->view('system_overview', $data);
+	}
 	public function camera_list($id = FALSE) {
 		$m = $this->db->select('zm')->get_where('camera_list',array('added_by' => $this->session->userdata('username')))->result();
 		$data['zoneminder_id'] = array();

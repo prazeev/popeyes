@@ -27,6 +27,9 @@ class Admin extends CI_Controller {
 		$data['rule'] = $this->db->get_where('admin', array('type' => 'rule_add_user'))->result();
 		$this->load->view('admin/add_user',$data);
 	}
+	public function  view_user() {
+		
+	}
 	public function add_user_form() {
 		$data['username'] = $this->input->post('username');
 		$data['fullname'] = $this->input->post('fullname');
