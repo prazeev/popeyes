@@ -15,8 +15,6 @@
    <!-- ANIMATE.CSS-->
    <link rel="stylesheet" href="<?=base_url('vendor/animate.css/animate.min.css'); ?>">
    <!-- WHIRL (spinners)-->
-   <!-- DATETIMEPICKER-->
-   <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
    <link rel="stylesheet" href="<?=base_url('vendor/whirl/dist/whirl.css'); ?>">
    <!-- SELECT2-->
    <link rel="stylesheet" href="<?=base_url('vendor/select2/dist/css/select2.css'); ?>">
@@ -27,6 +25,10 @@
    <!-- =============== PAGE VENDOR STYLES ===============-->
    <!-- =============== BOOTSTRAP STYLES ===============-->
    <link rel="stylesheet" href="<?=base_url('css/bootstrap.css'); ?>" id="bscss">
+   <!-- DATATABLES-->
+   <link rel="stylesheet" href="<?=base_url('vendor/datatables-colvis/css/dataTables.colVis.css'); ?>">
+   <link rel="stylesheet" href="<?=base_url('vendor/datatables/media/css/dataTables.bootstrap.css'); ?>">
+   <link rel="stylesheet" href="<?=base_url('vendor/dataTables.fontAwesome/index.css'); ?>">
    <!-- =============== APP STYLES ===============-->
    <link rel="stylesheet" href="<?=base_url('css/app.css'); ?>" id="maincss">
 </head>
@@ -41,10 +43,10 @@
             <div class="navbar-header">
                <a href="#/" class="navbar-brand">
                   <div class="brand-logo">
-                     <img src="<?=base_url('img/logo.png')?>" alt="App Logo" class="img-responsive">
+                     <img src="<?=base_url('img/logo.png'); ?>" alt="App Logo" class="img-responsive">
                   </div>
                   <div class="brand-logo-collapsed">
-                     <img src="<?=base_url('img/logo-single.png')?>" alt="App Logo" class="img-responsive">
+                     <img src="<?=base_url('img/logo-single.png'); ?>" alt="App Logo" class="img-responsive">
                   </div>
                </a>
             </div>
@@ -115,10 +117,10 @@
                   <li class="has-user-block">
                      <div id="user-block" class="collapse">
                         <div class="item user-block">
-                           <!-- User picture-->
-                           <!-- <div class="user-block-picture">
+                           <!-- User picture--><!-- 
+                           <div class="user-block-picture">
                               <div class="user-block-status">
-                                 <img src="<?=base_url('img/user/02.jpg')?>" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
+                                 <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
                                  <div class="circle circle-success circle-lg"></div>
                               </div>
                            </div> -->
@@ -135,19 +137,19 @@
                   <li class="nav-heading">
                      <span data-localize="sidebar.heading.HEADER">Corporate Access</span>
                   </li>
-                  <li class=" ">
+                  <li class="active">
                      <a href="#dashboard" title="Home" data-toggle="collapse">
                         <em class="icon-speedometer"></em>
                         <span data-localize="sidebar.nav.HOME">Navigation</span>
                      </a>
                      <ul id="dashboard" class="nav sidebar-subnav collapse">
                         <li class="sidebar-subnav-header">Navigation</li>
-                        <li class=" ">
+                        <li class="">
                            <a href="<?=site_url('main/index'); ?>" title="Home">
                               <span>Corporate Command</span>
                            </a>
                         </li>
-                        <li class=" ">
+                        <li class="active">
                            <a href="<?=site_url('main/#'); ?>" title="Systems Overview">
                               <span>Systems Overview</span>
                            </a>
@@ -159,7 +161,7 @@
                         </li>
                      </ul>
                   </li>
-                  <li class="active">
+                  <li class=" ">
                      <a href="#monitoring" title="Home" data-toggle="collapse">
                         <em class="icon-social-dropbox"></em>
                         <span data-localize="sidebar.nav.HOME">Monitoring</span>
@@ -171,7 +173,7 @@
                               <span>Live</span>
                            </a>
                         </li>
-                        <li class="active">
+                        <li class=" ">
                            <a href="<?=site_url('main/event_list'); ?>" title="Playback">
                               <span>Playback</span>
                            </a>
@@ -242,64 +244,35 @@
       <section>
          <!-- Page content-->
          <div class="content-wrapper">
-            <h3>Dashboard
-               <small>Record events</small>
-            </h3>
+            <h3><?=$panel_head;?></h3>
             <div class="row">
-            <form method="post" action="<?=base_url('index.php/main/search') ?>" class="container">
-                     <div class="col-md-3">
-                         <input type="text" name="start" class="form-control daterange col-md-3 input-lg" value="<?=isset($_POST['start'])?$_POST['start']:date('Y-m-d h:i A', time()-60*60*10)?>" />
-                     </div>
-                     <div class="col-md-1 text-center">___</div>
-                     <div class="col-md-3">
-                        <input type="text" name="end" class="form-control daterange col-md-3 input-lg" value="<?=isset($_POST['end'])?$_POST['end']:date('Y-m-d h:i A')?>" />
-                     </div>
-                     <div class="col-md-2">
-                        <input type="text" name="monitor" placeholder="Camera ID" class="form-control col-md-3 input-lg" value="<?=isset($_POST['monitor'])?$_POST['monitor']:''?>" />
-                     </div>
-                     <div class="col-md-3">
-                         <button type="submit" name="submit" class="btn btn-primary btn-lg">Go</button>
-                     </div>         
-                     
-                  </form>
-                  <hr>
-                  <?php foreach($events as $key => $value) : ?>
-                  <?php
-                  if($test == 0)
-                     continue;
-                  ?>
-                  <?php
-                  if(!in_array($value->Event->MonitorId, $zoneminder_id)) continue;
-                  ?>
-                  <div id="portlet-<?=$key.rand(1,11000); ?>" data-toggle="portlet" class="col-lg-4">
-                        <div id="panelPortlet<?=$key.rand(1,11000); ?>" class="panel panel-info">
-                           <div class="panel-heading portlet-handler"><?=$value->Event->Name; ?>
-                              <a href="#" data-tool="panel-dismiss" data-toggle="tooltip" title="" class="pull-right" data-original-title="Close Panel">
-                                 <em class="fa fa-times"></em>
-                              </a>
-                              <a href="#" data-tool="panel-collapse" data-toggle="tooltip" title="" class="pull-right" data-original-title="Collapse Panel">
-                                 <em class="fa fa-minus"></em>
-                              </a>
-                           </div>
-                           <div class="panel-wrapper">
-                              <div class="panel-body">
-                              <center>
-                                 <img src="<?=PATH;?>zm/?view=image&eid=<?=$value->Event->Id;?>&fid=1" class="img-responsive"></center><br>
-                                 <b>Start Time: <?=$value->Event->StartTime?></b><br>
-                                 <b>End Time: <?=$value->Event->EndTime?></b>
-                              </div>
-                              <div class="panel-footer"> Camera Options
-                                    <div class="btn-group pull-right">
-                                    <a href="<?=site_url('main/event_list/'.$value->Event->Id); ?>" class="btn btn-md btn-danger">Remove</a>
-                                    <a href="<?=site_url('main/event_list/'.$value->Event->Id); ?>" class="btn btn-md btn-success">View</a>
-                                    </div>
-                                    <div class="clearfix"></div>
-                              </div>
-                           </div>
-                        </div>
-                       <!-- END panel-->
+               <div class="panel panel-danger b">
+                  <div class="panel-heading">
+                     <h4><?=$panel_head; ?></h4>
                   </div>
-               <?php endforeach; ?>
+                  <div class="panel-body">
+                     <table class="table">
+                        <thead>
+                           <tr>
+                              <?php foreach($header as $val): ?>
+                                 <th><?=$val; ?></th>
+                              <?php endforeach; ?>
+                           </tr>
+                        </thead>
+                        <tbody>
+                              <?php foreach($list as $val): ?>
+                              <tr>
+                                 <td><?=rand(1000,2000); ?></td>
+                                 <td><?=alternator('California','Los Vegas','Nepal','Florida','Japan'); ?></td>
+                                 <td><?=alternator('Joseph R. Greenfield','Bashudev Paudel','Jhon Doe','Baby Doe','Suman Wagle'); ?></td>
+                                 <td><?=alternator('Yes','No'); ?></td>
+                                 <td><a href="<?=site_url('main/system_overview/'.$link.'/'.$val->Employee); ?>" class="btn btn-sm btn-danger">View</a></td>
+                              </tr>
+                              <?php endforeach; ?>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
             </div>
          </div>
       </section>
@@ -334,68 +307,23 @@
    <!-- RTL demo-->
    <script src="<?=base_url('js/demo/demo-rtl.js'); ?>"></script>
    <!-- =============== PAGE VENDOR SCRIPTS ===============-->
-   <!-- JQUERY UI-->
-   <script src="<?=base_url('vendor/jquery-ui/jquery-ui.js'); ?>"></script>
-   <script src="<?=base_url('vendor/jqueryui-touch-punch/jquery.ui.touch-punch.min.js'); ?>"></script>
    <!-- SWEET ALERT-->
    <script src="<?=base_url('vendor/sweetalert/dist/sweetalert.min.js'); ?>"></script>
     <script src="<?=base_url('vendor/parsleyjs/dist/parsley.min.js'); ?>"></script>
+    <!-- Google map -->
+   <!-- SPARKLINE-->
+   <script src="<?=base_url('vendor/sparkline/index.js'); ?>"></script>
    <!-- =============== PAGE VENDOR SCRIPTS ===============-->
-      <!-- MOMENT JS-->
-   <script src="<?=base_url('vendor/moment/min/moment-with-locales.min.js'); ?>"></script>
-
-   <!-- DATETIME PICKER -->
-   <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+   <script src="<?=base_url('vendor/datatables/media/js/jquery.dataTables.min.js'); ?>"></script>
+   <script src="<?=base_url('vendor/datatables-colvis/js/dataTables.colVis.js'); ?>"></script>
+   <script src="<?=base_url('vendor/datatables/media/js/dataTables.bootstrap.js'); ?>"></script>
+   <script src="<?=base_url('js/demo/demo-datatable.js'); ?>"></script>
    <!-- =============== APP SCRIPTS ===============-->
    <script src="<?=base_url('js/app.js'); ?>"></script>
+   <script src="<?=base_url('js/costum.js'); ?>"></script>
    <script type="text/javascript">
        $('select').select2();
        <?=$this->session->flashdata('message'); ?>
-       $('.panel')
-      .on('panel.refresh', function(e, panel){
-
-        // perform any action when a .panel triggers a the refresh event
-        setTimeout(function(){
-
-          // when the action is done, just remove the spinner class
-          panel.removeSpinner();
-      
-        }, 3000);
-
-      })
-      .on('hide.bs.collapse', function(event){
-
-        console.log('Panel Collapse Hide');
-
-      })
-      .on('show.bs.collapse', function(event){
-
-        console.log('Panel Collapse Show');
-
-      })
-      .on('panel.remove', function(event, panel, deferred){
-        console.log('Removing panel');
-        // Call resolve() to continue removing the panel
-        // perform checks to avoid removing panel if some user action is required
-        deferred.resolve();
-      })
-      .on('panel.removed', function(event, panel){
-
-        console.log('Removed panel');
-
-      });
-   </script>
-     <script type="text/javascript">
-      $(function() {
-          $('.daterange').daterangepicker({
-              timePicker: true,
-              singleDatePicker: true,
-              timePickerIncrement: 1,
-              locale: {
-                  format: 'YYYY-MM-DD hh:mm A'
-              }
-          });
-      });
    </script>
 </body>
 

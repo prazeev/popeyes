@@ -6,7 +6,7 @@ class Main extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->library(array('curl','session'));
-		$this->load->helper(array('url','camera'));
+		$this->load->helper(array('url','camera','date','string'));
 		$this->load->database();
 		if(!$this->session->userdata('username')) {
 			redirect('auth/index','refresh');
@@ -147,9 +147,79 @@ class Main extends CI_Controller {
 		}
 		$this->load->view('camera_list_location',$data);
 	}
-	public function system_overview() {
-		$data['title'] = "System Overview";
-		$this->load->view('system_overview', $data);
+	public function trans_list() {
+		// Transaction list for the docdonutes
+		$data['Transaction'] = $this->db->get('data_table')->result();
+                                 foreach ($data['Transaction'] as $key => $value): ?>
+                                 <tr class="data-row" data-val="<?=$value->Trans; ?>">
+                                    <td><?=$value->Trans; ?></td>
+                                    <td class="text-nowrap">
+                                       <?=$value->Store_Number; ?>
+                                    </td>
+                                    <td><?=nice_date($value->Date,'j M, Y'); ?></td>
+                                    <td>
+                                       <?=nice_time($value->Time_Start); ?>
+                                    </td>
+                                    <td><?=nice_time($value->Time_End); ?>
+                                    </td>
+                                    <td>
+                                    <?=$value->Employee; ?>
+                                    </td>
+                                    <td>
+                                    &#xFF04;<?=number_format($value->Order_Total, 2); ?>
+                                    </td>
+                                 </tr>
+                                 <?php
+                                 endforeach;
+	}
+	// Data list 
+	public function data_list($id) {
+		$res = $this->db->get_where('data_table', array('Trans' => $id))->result();
+		header('Content-Type: application/json');
+		echo json_encode($res);
+	}
+	public function video_data($store = FALSE) {
+		// header('Content-Type: application/json');
+		$start_time = nice_time($this->input->post('start'));
+		$end_time = nice_time($this->input->post('end'));
+		$date = $this->input->post('date');
+		// Making nice date
+		$date = nice_date($date, 'Y-m-d');
+		// Making zoneminder date
+		$start = str_replace(" ", "%20", date('Y-m-d H:i:s', strtotime($date.' '.$start_time)));
+		$end = str_replace(" ", "%20", date('Y-m-d H:i:s', strtotime($date.' '.$end_time)));
+		$data = $this->db->get_where('camera_list', array('store' => $store))->row();
+		$e = json_decode($this->curl->simple_get(SERVER."events/index/MonitorId:".$data->zm."/StartTime%20>=:".$start."/EndTime%20<=:".$end.".json"));
+		// $e->event->Data = array('location' => $data->location,
+		// 						'lng' => $data->lng,
+		// 						'lat' => $data->lat,
+		// 						'added_by' => $data->added_by,
+		// 						'zm' => $data->zm);
+		header('Content-Type: application/json');
+		print_r(json_encode($e));
+	}
+	public function system_overview($title = FALSE,$id = FALSE) {
+		if(!$title && !$id) {
+			$data['title'] = "System Overview";
+			// Transaction details
+			$data['Transaction'] = $this->db->get('data_table')->result();
+			$this->load->view('system_overview', $data);
+		}
+		else if($title == 'employee' && !$id) {
+			$data['title'] = "Employee List";
+			$data['header'] = array('ID','Store Location','Name','Manager','');
+			$data['panel_head'] = "Employee List";
+			$data['link'] = 'employee';
+			$this->db->select("DISTINCT(Employee)");
+			$data['list'] = $this->db->get('data_table')->result();
+			$this->load->view('filter_list',$data);
+		}
+		else if($title == 'employee' && $id) {
+			$data['title'] = "Employee Filter";
+			// Transaction details
+			$data['Transaction'] = $this->db->get_where('data_table', array('Employee' => $id))->result();
+			$this->load->view('system_overview', $data);
+		}
 	}
 	public function camera_list($id = FALSE) {
 		$m = $this->db->select('zm')->get_where('camera_list',array('added_by' => $this->session->userdata('username')))->result();
@@ -204,9 +274,12 @@ class Main extends CI_Controller {
 			$e = json_decode($this->curl->simple_get(SERVER."events.json"));
 			$data['events'] = $e->events;
 			$data['title'] = "Record list";
+			// Wrong way
+			$data['test'] = 0;
 			$this->load->view('event_list', $data);
 		}
 		else {
+			$data['test'] = 1;
 			$e = json_decode($this->curl->simple_get(SERVER."events/".$id.".json"));
 			$data['title'] = "Record list";
 			$data['event'] = $e->event->Event;

@@ -17,6 +17,7 @@
    <!-- WHIRL (spinners)-->
    <link rel="stylesheet" href="<?=base_url('vendor/whirl/dist/whirl.css'); ?>">
    <!-- =============== PAGE VENDOR STYLES ===============-->
+   <link rel="stylesheet" href="<?=base_url('vendor/spinkit/css/spinkit.css'); ?>">
    <!-- SWEET ALERT-->
    <link rel="stylesheet" href="<?=base_url('vendor/sweetalert/dist/sweetalert.css'); ?>">
    <!-- VECTOR MAP-->
@@ -143,7 +144,7 @@
                      </a>
                      <ul id="dashboard" class="nav sidebar-subnav collapse">
                         <li class="sidebar-subnav-header">Navigation</li>
-                        <li class=" ">
+                        <li class="">
                            <a href="<?=site_url('main/index'); ?>" title="Home">
                               <span>Corporate Command</span>
                            </a>
@@ -251,7 +252,14 @@
                <!-- video section -->
                   <div class="panel widget panel-danger">
                      <div class="panel-heading"><h4>Video Playback</h4></div>
-                     <div class="panel-body" style="min-height: 300px"></div>
+                     <div class="panel-body" style="min-height: 250px" align="center" id="video_playback"></div>
+                     <div class="panel-footer text-center">
+                       <button class="btn btn-danger fastback"><i class="fa fa-fast-backward"></i></button>
+                       <button class="btn btn-success pause"><i class="fa fa-pause"></i></button>
+                       <button class="btn btn-primary play" disabled><i class="fa fa-play"></i></button>
+                       <button class="btn btn-danger stop" disabled><i class="fa fa-stop"></i></button>
+                       <button class="btn btn-danger fastfront"><i class="fa fa-fast-forward"></i></button>
+                     </div>
                   </div>
                <!-- information section -->
                   <div class="panel widget panel-danger">
@@ -259,16 +267,16 @@
                         <table class="table" width="100%">
                            <tbody>
                               <tr>
-                                 <td><strong>Manager Approval</strong></td>
-                                 <td>Bashudev Paudel</td>
+                                 <td><strong>Cashier</strong></td>
+                                 <td id="cashier">Bashudev Paudel</td>
                               </tr>
                               <tr>
                                  <td><strong>Register#:</strong></td>
-                                 <td>3</td>
+                                 <td id="register">3</td>
                               </tr>
                               <tr>
                                  <td><strong>Date</strong></td>
-                                 <td><?=Date('h:m:s A'); ?>-12:10:06 PM</td>
+                                 <td id="date"><?=Date('h:m:s A'); ?>-12:10:06 PM</td>
                               </tr>
                            </tbody>
                         </table>
@@ -298,38 +306,39 @@
                            <table class="table table-striped table-hover">
                               <thead>
                                  <tr>
-                                    <th>Type</th>
                                     <th>#ID</th>
-                                    <th>Description</th>
-                                    <th>Location</th>
+                                    <th>Store</th>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
                                     <th>Employee</th>
-                                    <th>Discount</th>
-                                    <th>Amount</th>
-                                    <th>Time</th>
+                                    <th>Total</th>
                                  </tr>
                               </thead>
-                              <tbody>
-                                 <tr class="data-row" data-val="20">
-                                    <td>
-                                       <div class="badge bg-gray-lighter">16657</div>
-                                    </td>
-                                    <td>BI:54678</td>
+                              <tbody class="trans_list">
+                                 <?php
+                                 foreach ($Transaction as $key => $value): ?>
+                                 <tr class="data-row" data-val="<?=$value->Trans; ?>">
+                                    <td><?=$value->Trans; ?></td>
                                     <td class="text-nowrap">
-                                       <small>Maecenas mollis egestas convallis.</small>
+                                       <?=$value->Store_Number; ?>
                                     </td>
-                                    <td>01/01/2016</td>
+                                    <td><?=nice_date($value->Date,'j M, Y'); ?></td>
                                     <td>
-                                       <div data-toggle="tooltip" data-title="normal" class="circle circle-lg circle-warning"></div>
+                                       <?=nice_time($value->Time_Start); ?>
                                     </td>
-                                    <td><a href="">Sylvia Daniels</a>
-                                    </td>
-                                    <td>
-                                       <div class="inline wd-xxs label label-success">open</div>
+                                    <td><?=nice_time($value->Time_End); ?>
                                     </td>
                                     <td>
-                                       10:23 PM
+                                    <?=$value->Employee; ?>
+                                    </td>
+                                    <td>
+                                    &#xFF04;<?=number_format($value->Order_Total, 2); ?>
                                     </td>
                                  </tr>
+                                 <?php
+                                 endforeach;
+                                 ?>
                               </tbody>
                            </table>
                         </div>
@@ -339,6 +348,7 @@
                      <div class="panel-heading"><h4>Receipt</h4></div>
                      <div class="panel-body">
                         <div class="treeview"></div>
+                        <div class="row" id="bottom_data"></div>
                      </div>
                   </div>
                </div>
@@ -411,14 +421,114 @@
          $('.clearpanel').hide();
       }
    }
+   function spin(selector) {
+      var data =               '<div class="sk-three-bounce">\
+                           <div class="sk-child sk-bounce1"></div>\
+                           <div class="sk-child sk-bounce2"></div>\
+                           <div class="sk-child sk-bounce3"></div>\
+                        </div>';
+      $(selector).html(data);
+}
+function make_tree(tree) {
+   $('.treeview').treeview({data: tree,levels: 1,selectedBackColor: "#FFFFFF", selectedColor: "#000"});
+}
+function extract_data(data) {
+   data = data.split(',');
+   if(data[data.length - 1] == '')
+      data.splice(data.length - 1, 1);
+   return data;
+}
+function get_data(data, i) {
+   if(data == 'n/a')
+      return '';
+   data = extract_data(data);
+   if(data.length > i) {
+      return data[i];
+   }
+   else
+      return '';
+}
+function add_text(selector,data) {
+   spin(selector);
+   $(selector).html('');
+   for(var i = 0; i< data.length; i++) {
+      // console.log(data[i])
+      $(selector).append('<div class="col-md-12 single_item">'+data[i]+'</div>');
+   }
+}
+function rand_num(max = 10) {
+    return Math.floor(Math.random() * max) + 1;
+  }
+
     $(document).on("click",".data-row", function() {
+      spin('#video_playback');
+      spin('.treeview');
       var data = $(this).data('val');
+      $(".data-row").not(this).remove();
       panelaction('show');
-    });
-    $(document).on("click","#clearpanel", function() {
-      panelaction('hide');
-    });
-    var tree = [
+      $.ajax({url: "<?=site_url('main/data_list/"+data+"'); ?>", success: function(result){
+         var bottom_data = [];
+         $.each(result, function(i, val) {
+            // Video playback data goes here
+            $.ajax({url: "<?=site_url('main/video_data/"+val.Store_Number+"'); ?>",  type: 'POST', data: {
+               'start': val.Time_Start,
+               'end': val.Time_End,
+               'date': val.Date
+            }, success: function(vid) {
+                  $.each(vid, function(vid_id, video) {
+                     // Play with video
+                     if(video.length == 0) {
+                        var html = "Video footage not found!";
+                     }
+                     else {
+                        var html = '<img id="evtStream" class="img-responsive" src="<?=PATH;?>zm/cgi-bin/nph-zms?source=event&amp;mode=jpeg&amp;event='+video[0].Event.Id+'&amp;frame=1&amp;scale=100&amp;rate=100&amp;maxfps=25&amp;replay=single&amp;connkey=<?php $rand=rand(100000,9999999); echo $rand; ?>&amp;rand=<?=$rand; ?>" alt="Event-1">';
+                     }
+                     // console.log(html)
+                     $('#video_playback').html(html);
+                  });
+            },
+            error: function(request, status, error) {
+               console.log(request.responseText);
+            }});
+            // Item filter
+            var item = extract_data(val.Item_Name);
+            var tree = [];
+            for(var j=0; j<item.length; j++) {
+               if(get_data(val.Item_QTY, j))
+                  var cap = get_data(val.Item_QTY, j)+"&nbsp;&nbsp;"+item[j]+" <span class='pull-right'> $"+get_data(val.Item_Price, j)+"</span>";
+               else
+                  var cap = get_data(val.Item_QTY, j)+"&nbsp;&nbsp;"+item[j]+" <span class='pull-right'> "+get_data(val.Item_Price, j)+"</span>";
+               var itm = {
+                  text: cap
+               };
+               tree.push(itm);
+               // console.log(cap);
+            }
+            // Making total data receipt
+             // total data
+               var sub_total = "&nbsp;&nbsp;&nbsp;Sub Total <span class='pull-right'> $"+val.Subtotal+"</span>";
+               bottom_data.push(sub_total);
+               //Tax
+               var tax = "&nbsp;&nbsp;&nbsp;Tax <span class='pull-right'> $"+val.Total_Tax+"</span>";
+               bottom_data.push(tax);
+               //Total Discount
+               var total_discount = "&nbsp;&nbsp;&nbsp;Discount <span class='pull-right'> $"+val.Total_Discount+"</span>";
+               bottom_data.push(total_discount);
+               //Total
+               var sub_total = "&nbsp;&nbsp;&nbsp;Total <span class='pull-right'> $"+val.Order_Total+"</span>";
+               bottom_data.push(sub_total);
+               //Tender
+               var tender_type = "&nbsp;&nbsp;&nbsp;Tender <span class='pull-right'> $"+val.Tender_Type+"</span>";
+               bottom_data.push(tender_type);
+               add_text('#bottom_data',bottom_data);
+            make_tree(tree);
+         });
+
+
+
+
+         // Mking tree for receipt
+              var tree = [
   {
     text: "Parent 1",
     nodes: [
@@ -447,7 +557,16 @@
     text: "Parent 5"
   }
 ];
-$('.treeview').treeview({data: tree,levels: 1,selectedBackColor: "#FFFFFF", selectedColor: "#000"});
+      }});
+    });
+    $(document).on("click","#clearpanel", function() {
+      spin('.trans_list');
+      $.ajax({url: "<?=site_url('main/trans_list'); ?>", success: function(result){
+        $(".trans_list").html(result);
+      }});
+      panelaction('hide');
+    });
+  
 $(document).on('nodeSelected',".treeview", function(e, node){
      var NodeID=node.nodeId;
 
@@ -456,7 +575,120 @@ $(document).on('nodeSelected',".treeview", function(e, node){
 })(window, document, window.jQuery);
 
 
+
 </script>
+
+ <script type="text/javascript">
+   var CMD_NONE = 0;
+   var CMD_PAUSE = 1;
+   var CMD_PLAY = 2;
+   var CMD_STOP = 3;
+   var CMD_FASTFWD = 4;
+   var CMD_SLOWFWD = 5;
+   var CMD_SLOWREV = 6;
+   var CMD_FASTREV = 7;
+   var CMD_ZOOMIN = 8;
+   var CMD_ZOOMOUT = 9;
+   var CMD_PAN = 10;
+   var CMD_SCALE = 11;
+   var CMD_PREV = 12;
+   var CMD_NEXT = 13;
+   var CMD_SEEK = 14;
+   var CMD_QUERY = 99;
+
+   var SCALE_BASE = 100;
+        <?=$this->session->flashdata('message'); ?>
+        var thisUrl = "<?=PATH?>zm/index.php";
+        // var AJAX_TIMEOUT = 3000;
+        // var streamReq = new Request.JSON( { url: thisUrl, method: 'post', timeout: AJAX_TIMEOUT, link: 'chain', onSuccess: getCmdResponse } );
+        // var streamParms = "view=request&request=stream&connkey="+<?=$rand; ?>;
+
+        
+
+        $(".pause").click(function() {
+         $(".pause").attr('disabled','');
+         $(".play").removeAttr('disabled');
+         $(".fastback").removeAttr('disabled');
+         $(".fastfront").removeAttr('disabled');
+         $(".stop").removeAttr('disabled');
+         $.getJSON(thisUrl, 
+                     {
+                        view: 'request',
+                        request: 'stream',
+                        connkey: '<?=$rand?>',
+                        command: CMD_PAUSE
+                  }, function(json, textStatus) {
+         });
+        });
+
+        $(".play").click(function() {
+         $(".play").attr('disabled', '');
+         $(".pause").removeAttr('disabled');
+         $(".fastback").removeAttr('disabled');
+         $(".fastfront").removeAttr('disabled');
+         $(".stop").removeAttr('disabled');
+
+         $.getJSON(thisUrl, 
+                     {
+                        view: 'request',
+                        request: 'stream',
+                        connkey: '<?=$rand?>',
+                        command: CMD_PLAY
+                  }, function(json, textStatus) {
+         });
+        });
+
+        $(".fastfront").click(function() {
+         $(".pause").attr('disabled', '');
+         $(".play").attr('disabled','');
+         $(".fastback").attr('disabled', '');
+         $(".fastfront").removeAttr('disabled');
+         $(".stop").removeAttr('disabled');
+         $.getJSON(thisUrl, 
+                     {
+                        view: 'request',
+                        request: 'stream',
+                        connkey: '<?=$rand?>',
+                        command: CMD_FASTFWD
+                  }, function(json, textStatus) {
+                     console.log(textStatus);
+         });
+        });
+
+        $(".fastback").click(function() {
+         $(".pause").attr('disabled', '');
+         $(".play").attr('disabled','');
+         $(".fastfront").attr('disabled', '');
+         $(".fastback").removeAttr('disabled');
+         $(".stop").removeAttr('disabled');
+         $.getJSON(thisUrl, 
+                     {
+                        view: 'request',
+                        request: 'stream',
+                        connkey: '<?=$rand?>',
+                        command: CMD_FASTREV
+                  }, function(json, textStatus) {
+         });
+        });
+
+         $(".stop").click(function() {
+         $(".stop").attr('disabled', '');
+         $(".play").removeAttr('disabled');
+         $(".fastfront").removeAttr('disabled');
+         $(".fastback").removeAttr('disabled');
+         $(".pause").attr('disabled');
+         $.getJSON(thisUrl, 
+                     {
+                        view: 'request',
+                        request: 'stream',
+                        connkey: '<?=$rand?>',
+                        command: CMD_PAUSE
+                  }, function(json, textStatus) {
+         });
+      });
+
+   </script>
+
 </body>
 
 </html>
