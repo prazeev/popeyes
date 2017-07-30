@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/ipcamera/camera/';
+$config['base_url'] = 'http://clnvr.xgconnect.com:8087/ipcamera/camera/';
 
 /*
 |--------------------------------------------------------------------------
