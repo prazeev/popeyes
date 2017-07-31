@@ -76,6 +76,7 @@ class Main extends CI_Controller {
 		$database['location'] = $this->input->post('location');
 		$database['lng'] = $this->input->post('longitude');
 		$database['lat'] = $this->input->post('latitude');
+		$database['store'] = $this->input->post('store');
 		$database['added_by'] = $this->get_user();
 		if($this->db->insert('camera_list', $database)) {
 			$last_id = $this->db->insert_id();
@@ -178,6 +179,16 @@ class Main extends CI_Controller {
 		header('Content-Type: application/json');
 		echo json_encode($res);
 	}
+	public function get_camera_by_store($store) {
+		$res = $this->db->select('zm,cname')->get_where('camera_list', array('store' => $store))->result();
+		$data = [];
+		foreach ($res as $key => $value) {
+			array_push($data, $value);
+		}
+		header('Content-Type: application/json');
+		echo (json_encode($data));
+
+	}
 	public function video_data($store = FALSE) {
 		// header('Content-Type: application/json');
 		$start_time = nice_time($this->input->post('start'));
@@ -197,6 +208,27 @@ class Main extends CI_Controller {
 		// 						'zm' => $data->zm);
 		header('Content-Type: application/json');
 		print_r(json_encode($e));
+	}
+	public function video_data_change($zm,$trans) {
+		// Getting start and end time
+		$data = $this->db->get_where('data_table', array('Trans' => $trans))->row();
+		$start_time = nice_time($data->Time_Start);
+		$end_time = nice_time($data->Time_End);
+		$date = $data->Date;
+		// Making nice date
+		$date = nice_date($date, 'Y-m-d');
+		// Making zoneminder date
+		$start = str_replace(" ", "%20", date('Y-m-d H:i:s', strtotime($date.' '.$start_time)));
+		$end = str_replace(" ", "%20", date('Y-m-d H:i:s', strtotime($date.' '.$end_time)));
+		$e = json_decode($this->curl->simple_get(SERVER."events/index/MonitorId:".$zm."/StartTime%20>=:".$start."/EndTime%20<=:".$end.".json"));
+		// $e->event->Data = array('location' => $data->location,
+		// 						'lng' => $data->lng,
+		// 						'lat' => $data->lat,
+		// 						'added_by' => $data->added_by,
+		// 						'zm' => $data->zm);
+		header('Content-Type: application/json');
+		print_r(json_encode($e));
+
 	}
 	public function system_overview($title = FALSE,$id = FALSE) {
 		if(!$title && !$id) {
@@ -218,6 +250,12 @@ class Main extends CI_Controller {
 			$data['title'] = "Employee Filter";
 			// Transaction details
 			$data['Transaction'] = $this->db->get_where('data_table', array('Employee' => $id))->result();
+			$this->load->view('system_overview', $data);
+		}
+		else if($title == 'store' && $id) {
+			$data['title'] = "Store Filter";
+			// Transaction details
+			$data['Transaction'] = $this->db->get_where('data_table', array('Store_Number' => $id))->result();
 			$this->load->view('system_overview', $data);
 		}
 	}

@@ -251,7 +251,10 @@
                <div class="col-lg-5 col-md-5 col-sm-12" style="display: none;" id="left-row">
                <!-- video section -->
                   <div class="panel widget panel-danger">
-                     <div class="panel-heading"><h4>Video Playback</h4></div>
+                     <div class="panel-heading" style="min-height: 55px">
+                        <div class="col-md-7"><strong>Video Playback</strong></div>
+                        <div class="col-md-5" id="video_angle"></div>
+                     </div>
                      <div class="panel-body" style="min-height: 250px" align="center" id="video_playback"></div>
                      <div class="panel-footer text-center">
                        <button class="btn btn-danger fastback"><i class="fa fa-fast-backward"></i></button>
@@ -286,13 +289,13 @@
                <div class="col-lg-12 col-md-12 col-sm-12" id="right-row">
                   <div id="store-list">
                      <div class="col-md-4">
-                        <button class="btn btn-block btn-lg btn-danger">Store 1</button>
+                        <a class="btn btn-block btn-lg btn-danger" href="<?=site_url('main/system_overview/store/44'); ?>">Store 44</a>
                      </div>
                      <div class="col-md-4">
-                        <button class="btn btn-block btn-lg btn-danger">Store 2</button>
+                        <a class="btn btn-block btn-lg btn-danger" href="<?=site_url('main/system_overview/store/43'); ?>">Store 43</a>
                      </div>
                      <div class="col-md-4">
-                        <button class="btn btn-block btn-lg btn-danger">Store 3</button>
+                        <a class="btn btn-block btn-lg btn-danger" href="<?=site_url('main/system_overview/store/44'); ?>">Store 44</a>
                      </div>
                   <br><br><br>
                   </div>
@@ -460,14 +463,18 @@ function rand_num(max = 10) {
     return Math.floor(Math.random() * max) + 1;
   }
 
+  var rand = rand_num(20000);
     $(document).on("click",".data-row", function() {
       spin('#video_playback');
+      $('#video_angle').html('')
       spin('.treeview');
       var data = $(this).data('val');
+      var trans = data;
       $(".data-row").not(this).remove();
       panelaction('show');
       $.ajax({url: "<?=site_url('main/data_list/"+data+"'); ?>", success: function(result){
          var bottom_data = [];
+         rand = rand_num(20000);
          $.each(result, function(i, val) {
             // Video playback data goes here
             $.ajax({url: "<?=site_url('main/video_data/"+val.Store_Number+"'); ?>",  type: 'POST', data: {
@@ -481,10 +488,27 @@ function rand_num(max = 10) {
                         var html = "Video footage not found!";
                      }
                      else {
-                        var html = '<img id="evtStream" class="img-responsive" src="<?=PATH;?>zm/cgi-bin/nph-zms?source=event&amp;mode=jpeg&amp;event='+video[0].Event.Id+'&amp;frame=1&amp;scale=100&amp;rate=100&amp;maxfps=25&amp;replay=single&amp;connkey=<?php $rand=rand(100000,9999999); echo $rand; ?>&amp;rand=<?=$rand; ?>" alt="Event-1">';
+                        // // CAmera angles
+                        $.ajax({url: "<?=site_url('main/get_camera_by_store/"+val.Store_Number+"'); ?>",
+                           success: function(angle) {
+                              var video_angle = '<select name="change_angle" class="form-control">';
+                              $.each(angle, function(z_id, zm_data) {
+                                 if(z_id == 0)
+                                    video_angle += "<option value='"+zm_data.zm+"%"+trans+"' selected>"+zm_data.cname+"</option>";
+                                 else
+                                    video_angle += "<option value='"+zm_data.zm+"%"+trans+"'>"+zm_data.cname+"</option>";
+                                 console.log(video_angle)
+                              });
+                                 video_angle += "</select>";
+                                 $("#video_angle").html(video_angle);
+                           }
+                        });
+                        // Add video andles
+                        var html = '<img id="evtStream" class="img-responsive" src="<?=PATH;?>zm/cgi-bin/nph-zms?source=event&amp;mode=jpeg&amp;event='+video[0].Event.Id+'&amp;frame=1&amp;scale=100&amp;rate=100&amp;maxfps=25&amp;replay=single&amp;connkey='+rand+'&amp;rand='+rand+'" alt="Event-1">';
                      }
                      // console.log(html)
                      $('#video_playback').html(html);
+                     return false;
                   });
             },
             error: function(request, status, error) {
@@ -566,6 +590,27 @@ function rand_num(max = 10) {
       }});
       panelaction('hide');
     });
+    $(document).on('change', '[name=change_angle]', function() {
+      var data = $(this).find(":selected").val().split('%');
+      spin('#video_playback');
+      $.ajax({
+         url: "<?=site_url('main/video_data_change/"+data[0]+"/"+data[1]+"'); ?>",
+         success: function(video) {
+            $.each(video, function(v,vi) {
+               console.log(vi);
+               rand = rand_num(100000);
+               if(video.length == 0) {
+                  var html = "Video footage not found!";
+                  $('#video_playback').html(html);
+               } else {
+                  var html = '<img id="evtStream" class="img-responsive" src="<?=PATH;?>zm/cgi-bin/nph-zms?source=event&amp;mode=jpeg&amp;event='+vi[0].Event.Id+'&amp;frame=1&amp;scale=100&amp;rate=100&amp;maxfps=25&amp;replay=single&amp;connkey='+rand+'&amp;rand='+rand+'" alt="Event-1">';
+                  $('#video_playback').html(html);
+               }
+               return false;
+            })
+         }
+      })
+    });
   
 $(document).on('nodeSelected',".treeview", function(e, node){
      var NodeID=node.nodeId;
@@ -615,7 +660,7 @@ $(document).on('nodeSelected',".treeview", function(e, node){
                      {
                         view: 'request',
                         request: 'stream',
-                        connkey: '<?=$rand?>',
+                        connkey: rand,
                         command: CMD_PAUSE
                   }, function(json, textStatus) {
          });
@@ -632,7 +677,7 @@ $(document).on('nodeSelected',".treeview", function(e, node){
                      {
                         view: 'request',
                         request: 'stream',
-                        connkey: '<?=$rand?>',
+                        connkey: rand,
                         command: CMD_PLAY
                   }, function(json, textStatus) {
          });
@@ -648,7 +693,7 @@ $(document).on('nodeSelected',".treeview", function(e, node){
                      {
                         view: 'request',
                         request: 'stream',
-                        connkey: '<?=$rand?>',
+                        connkey: rand,
                         command: CMD_FASTFWD
                   }, function(json, textStatus) {
                      console.log(textStatus);
@@ -665,7 +710,7 @@ $(document).on('nodeSelected',".treeview", function(e, node){
                      {
                         view: 'request',
                         request: 'stream',
-                        connkey: '<?=$rand?>',
+                        connkey: rand,
                         command: CMD_FASTREV
                   }, function(json, textStatus) {
          });
@@ -681,7 +726,7 @@ $(document).on('nodeSelected',".treeview", function(e, node){
                      {
                         view: 'request',
                         request: 'stream',
-                        connkey: '<?=$rand?>',
+                        connkey: rand,
                         command: CMD_PAUSE
                   }, function(json, textStatus) {
          });

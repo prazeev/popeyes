@@ -15,7 +15,7 @@ function nice_time($time = FALSE) {
 		} else {
 			$attr = 'AM';
 		}
-		return $hour.':'.$minute.' '.$attr;
+		return sprintf('%02d',$hour).':'.sprintf('%02d',$minute).' '.$attr;
 	}
 }
 function extract_data($data) {

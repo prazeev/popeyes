@@ -113,8 +113,8 @@
                   <li class="has-user-block">
                      <div id="user-block" class="collapse">
                         <div class="item user-block">
-                           <!-- User picture-->
-                           <!-- <div class="user-block-picture">
+                           <!-- User picture--><!-- 
+                           <div class="user-block-picture">
                               <div class="user-block-status">
                                  <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
                                  <div class="circle circle-success circle-lg"></div>
@@ -133,14 +133,14 @@
                   <li class="nav-heading">
                      <span data-localize="sidebar.heading.HEADER">Corporate Access</span>
                   </li>
-                  <li class=" ">
+                  <li class="active">
                      <a href="#dashboard" title="Home" data-toggle="collapse">
                         <em class="icon-speedometer"></em>
                         <span data-localize="sidebar.nav.HOME">Navigation</span>
                      </a>
                      <ul id="dashboard" class="nav sidebar-subnav collapse">
                         <li class="sidebar-subnav-header">Navigation</li>
-                        <li class=" ">
+                        <li class="active">
                            <a href="<?=site_url('main/index'); ?>" title="Home">
                               <span>Corporate Command</span>
                            </a>
@@ -305,6 +305,12 @@
                            <div class="form-group">
                               <label class="control-label">Colours</label>
                               <input name="colours" required="" class="form-control" type="text" value="4" readonly="">
+                           </div>
+                           </div>
+                           <div class="col-lg-4">
+                           <div class="form-group">
+                              <label class="control-label">Store Name</label>
+                              <input name="store" required="" class="form-control" type="text" value="4" placeholder="Store Number">
                            </div>
                            </div>
 
