@@ -255,7 +255,7 @@
                         </div>
                         <div class="panel-wrapper">
                            <div class="panel-body">
-                              <img id="liveStream<?=$value->Monitor->Id; ?>" class="img-responsive" src="/zm/cgi-bin/nph-zms?mode=jpeg&amp;scale=100&amp;maxfps=25&amp;buffer=1000&amp;monitor=<?=$value->Monitor->Id; ?>&amp;connkey=786781<?=rand(1,1000); ?>&amp;rand=1491125142" alt="<?=$value->Monitor->Name; ?>"><br>
+                              <img id="liveStream<?=$value->Monitor->Id; ?>" class="img-responsive" src="<?=PATH; ?>zm/cgi-bin/nph-zms?mode=jpeg&amp;scale=100&amp;maxfps=25&amp;buffer=1000&amp;monitor=<?=$value->Monitor->Id; ?>&amp;connkey=786781<?=rand(1,1000); ?>&amp;rand=1491125142" alt="<?=$value->Monitor->Name; ?>"><br>
                               <b>Camera ID : <?=$value->Monitor->Id; ?></b>
                            </div>
                            <div class="panel-footer"> Camera Options
