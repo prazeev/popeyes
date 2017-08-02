@@ -353,39 +353,39 @@
                      </div>
                   </div>
                </div>
+               <div class="panel widget">
+                  <div id="panelchart20" class="panel panel-default">
+                     <div class="panel-heading">
+                        <div class="panel-title">Total Input Sales</div>
+                     </div>
+                     <div class="panel-body">
+                        <div class="chart-bar200 flot-chart"></div>
+                        <div class="row">
+                           <div class="col-lg-12">
+                              <div role="tabpanel">
+                              <!-- Nav tabs-->
+                              <ul role="tablist" class="nav nav-tabs">
+                                 <li role="presentation" class="active"><a href="#onedayrefund" aria-controls="home" role="tab" data-toggle="tab">1 Day</a>
+                                 </li>
+                                 <li role="presentation"><a href="#sevendaysrefund" aria-controls="profile" role="tab" data-toggle="tab">7 Days</a>
+                                 </li>
+                                 <li role="presentation"><a href="#onemonthrefund" aria-controls="messages" role="tab" data-toggle="tab">30 Days</a>
+                                 </li>
+                              </ul>
+                              <!-- Tab panes-->
+                              <div class="tab-content">
+                                 <div id="onedayrefund" role="tabpanel" class="tab-pane active">$1,076</div>
+                                 <div id="sevendaysrefund" role="tabpanel" class="tab-pane">$1,076</div>
+                                 <div id="onemonthrefund" role="tabpanel" class="tab-pane">$76</div>
+                              </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
                </div>
                <div class="col-lg-7 col-md-7 col-sm-12">
-                  <div class="col-md-4">
-                     <button class="btn btn-block btn-lg btn-danger">Store 1</button>
-                  </div>
-                  <div class="col-md-4">
-                     <button class="btn btn-block btn-lg btn-danger">Store 2</button>
-                  </div>
-                  <div class="col-md-4">
-                     <button class="btn btn-block btn-lg btn-danger">Store 3</button>
-                  </div>
-                  <hr>
-               <div class="col-md-12">
-                  <div class="mb-lg clearfix">
-                     <div class="pull-left">
-                        <button type="button" class="btn btn-sm btn-info">New ticket</button>
-                        <button type="button" class="btn btn-sm btn-default">
-                           <em class="fa fa-user-plus"></em>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-default">
-                           <em class="fa fa-pencil"></em>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-default">
-                           <em class="fa fa-mail-forward"></em>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-default">
-                           <em class="fa fa-print"></em>
-                        </button>
-                     </div>
-                     <div class="pull-right">
-                        <p class="mb0 mt-sm">19 bugs / 16 issues</p>
-                     </div>
-                  </div>
                   <div class="panel b">
                      <div class="panel-body">
                         <div class="table-responsive">
@@ -1145,6 +1145,60 @@
                   </div>
                </div>
                </div>
+               
+            <div class="row">
+               <div class="col-lg-4">
+                  <!-- START widget-->
+                  <div class="panel widget">
+                     <div class="panel-body">
+                        <div class="text-right text-muted">
+                           <em class="fa fa-circle fa-2x" style="color: #EE3D3D;"></em>
+                        </div>
+                        <h3 class="mt0">Register 1</h3>
+                        <p class="text-muted">Online (Connected)</p>
+                        <div class="progress progress-striped progress-xs">
+                           <div role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-success progress-100">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- END widget-->
+               </div>
+               <div class="col-lg-4">
+                  <!-- START widget-->
+                  <div class="panel widget">
+                     <div class="panel-body">
+                        <div class="text-right text-muted">
+                           <em class="fa fa-circle fa-2x" style="color: #EE3D3D;"></em>
+                        </div>
+                        <h3 class="mt0">Register 2</h3>
+                        <p class="text-muted">Online (Connected)</p>
+                        <div class="progress progress-striped progress-xs">
+                           <div role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-success progress-100">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- END widget-->
+               </div>
+               <div class="col-lg-4">
+                  <!-- START widget-->
+                  <div class="panel widget">
+                     <div class="panel-body">
+                        <div class="text-right text-muted">
+                           <em class="fa fa-plus fa-2x" style="color: #CE0034"></em>
+                        </div>
+                        <h3 class="mt0">Register 3</h3>
+                        <p class="text-muted">Offline (Not Connected)</p>
+                        <div class="progress progress-striped progress-xs">
+                           <div role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-danger progress-100">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- END widget-->
+               </div>
+            </div>
             </div>
          </div>
       </section>
@@ -1249,11 +1303,11 @@
 
     var chart = $('.chart-bar');
     var chart1 = $('.chart-bar1');
-    var chart2 = $('.chart-bar2');
-    if(chart.length && chart1.length) {
+    var chart3 = $('.chart-bar200');
+    if(chart.length && chart1.length && chart3.length) {
       $.plot(chart, data, options);
       $.plot(chart1, data, options);
-      $.plot(chart2, data, options);
+      $.plot(chart3, data, options);
     }
   });
 
