@@ -139,7 +139,7 @@
                      <ul id="dashboard" class="nav sidebar-subnav collapse">
                         <li class="sidebar-subnav-header">Navigation</li>
                         <li class="active">
-                           <a href="<?=site_url('main/index'); ?>" title="Home">
+                           <a href="<?=site_url('main/system_overview'); ?>" title="Home">
                               <span>Corporate Command</span>
                            </a>
                         </li>
@@ -223,6 +223,35 @@
                         </li>
                         <li class=" ">
                            <a href="<?=site_url('main/#'); ?>" title="Custom">
+                              <span>Custom</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class=" ">
+                     <a href="#filter" title="Filter" data-toggle="collapse">
+                        <em class="icon-speedometer"></em>
+                        <span data-localize="sidebar.nav.HOME">Filter</span>
+                     </a>
+                     <ul id="filter" class="nav sidebar-subnav collapse">
+                        <li class="sidebar-subnav-header">Filters</li>
+                        <li class=" ">
+                           <a href="<?=site_url('main/system_overview/void'); ?>" title="Void">
+                              <span>Void</span>
+                           </a>
+                        </li>
+                        <li class=" ">
+                           <a href="<?=site_url('main/system_overview/refunds'); ?>" title="Refunds">
+                              <span>Refunds</span>
+                           </a>
+                        </li>
+                        <li class=" ">
+                           <a href="<?=site_url('main/system_overview/discounts'); ?>" title="Discounts">
+                              <span>Discounts</span>
+                           </a>
+                        </li>
+                        <li class=" ">
+                           <a href="<?=site_url('main/system_overview'); ?>" title="Custom">
                               <span>Custom</span>
                            </a>
                         </li>

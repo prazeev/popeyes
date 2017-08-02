@@ -137,7 +137,7 @@
                   <li class="nav-heading">
                      <span data-localize="sidebar.heading.HEADER">Corporate Access</span>
                   </li>
-                  <li class="active">
+                  <li class=" ">
                      <a href="#dashboard" title="Home" data-toggle="collapse">
                         <em class="icon-speedometer"></em>
                         <span data-localize="sidebar.nav.HOME">Navigation</span>
@@ -149,8 +149,8 @@
                               <span>Corporate Command</span>
                            </a>
                         </li>
-                        <li class="active">
-                           <a href="<?=site_url('main/#'); ?>" title="Systems Overview">
+                        <li class=" ">
+                           <a href="<?=site_url('main/system_overview'); ?>" title="Systems Overview">
                               <span>Systems Overview</span>
                            </a>
                         </li>
@@ -230,6 +230,40 @@
                         <li class=" ">
                            <a href="<?=site_url('main/#'); ?>" title="Custom">
                               <span>Custom</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="active">
+                     <a href="#filter" title="Filter" data-toggle="collapse">
+                        <em class="icon-speedometer"></em>
+                        <span data-localize="sidebar.nav.HOME">Filter</span>
+                     </a>
+                     <ul id="filter" class="nav sidebar-subnav collapse">
+                        <li class="sidebar-subnav-header">Filters</li>
+                        <li class="<?=($link == 'void') ? 'active' : '' ?>">
+                           <a href="<?=site_url('main/system_overview/void'); ?>" title="Void">
+                              <span>Void</span>
+                           </a>
+                        </li>
+                        <li class="<?=($link == 'refunds') ? 'active' : '' ?>">
+                           <a href="<?=site_url('main/system_overview/refunds'); ?>" title="Refunds">
+                              <span>Refunds</span>
+                           </a>
+                        </li>
+                        <li class="<?=($link == 'discounts') ? 'active' : '' ?>">
+                           <a href="<?=site_url('main/system_overview/discounts'); ?>" title="Discounts">
+                              <span>Discounts</span>
+                           </a>
+                        </li>
+                        <li class="<?=($link == 'custom') ? 'active' : '' ?>">
+                           <a href="<?=site_url('main/system_overview'); ?>" title="Custom">
+                              <span>Custom</span>
+                           </a>
+                        </li>
+                        <li class="<?=($link == 'employee') ? 'active' : '' ?>">
+                           <a href="<?=site_url('main/system_overview/employee'); ?>" title="Custom">
+                              <span>Employee</span>
                            </a>
                         </li>
                      </ul>

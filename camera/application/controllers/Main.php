@@ -246,6 +246,30 @@ class Main extends CI_Controller {
 			$data['list'] = $this->db->get('data_table')->result();
 			$this->load->view('filter_list',$data);
 		}
+		else if($title == 'void' && !$id) {
+			$data['title'] = "Void List";
+			$data['header'] = array('ID','Store Location','Name','Manager','');
+			$data['panel_head'] = "Void Filter List";
+			$data['link'] = 'void';
+			$data['list'] = $this->db->get_where('data_table',array('Void' => 1))->result();
+			$this->load->view('filter_list',$data);
+		}
+		else if($title == 'refunds' && !$id) {
+			$data['title'] = "Refund List";
+			$data['header'] = array('ID','Store Location','Name','Manager','');
+			$data['panel_head'] = "Void Filter List";
+			$data['link'] = 'refunds';
+			$data['list'] = $this->db->get_where('data_table',array('Refund' => 1))->result();
+			$this->load->view('filter_list',$data);
+		}
+		else if($title == 'discounts' && !$id) {
+			$data['title'] = "Discount List";
+			$data['header'] = array('ID','Store Location','Name','Manager','');
+			$data['panel_head'] = "Discount Filter List";
+			$data['link'] = 'discounts';
+			$data['list'] = $this->db->get_where('data_table',array('Refund' => 1))->result();
+			$this->load->view('filter_list',$data);
+		}
 		else if($title == 'employee' && $id) {
 			$data['title'] = "Employee Filter";
 			// Transaction details
